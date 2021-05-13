@@ -10,11 +10,12 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class AsyncServerImpl implements AsyncService {
+    private static int DOCOUNT = 50;
 
     @Override
     public String AsyncServer() {
         long start = System.currentTimeMillis();
-        for(int i=0; i<20; i++){
+        for(int i=0; i<DOCOUNT; i++){
             this.AsyncExe();
         }
         long end = System.currentTimeMillis();
@@ -24,9 +25,9 @@ public class AsyncServerImpl implements AsyncService {
 
     @Async(value = "AsyncThreadPoolExecutor")
     public void AsyncExe(){
-        System.out.println("study @Async");
         try {
             Thread.sleep(1000);
+            System.out.println("study @Async");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -39,18 +40,19 @@ public class AsyncServerImpl implements AsyncService {
                 new LinkedBlockingQueue<>(100),
                 new ThreadPoolExecutor.AbortPolicy());
         long start = System.currentTimeMillis();
-        for(int i=0; i<20; i++){
+        for(int i=0; i<DOCOUNT; i++){
             threadPool.execute(() -> this.Exe());
         }
+        threadPool.shutdown();
         long end = System.currentTimeMillis();
         System.out.println("!!!!!time2: "+(start-end));
         return String.valueOf(start-end);
     }
 
     public void Exe(){
-        System.out.println("study Exe");
         try {
             Thread.sleep(1000);
+            System.out.println("study Exe");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
